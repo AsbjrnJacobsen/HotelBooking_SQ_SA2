@@ -9,7 +9,18 @@ namespace HotelBooking.UnitTests.Fakes
         // This field is exposed so that a unit test can validate that the
         // Add method was invoked.
         public bool addWasCalled = false;
+        private readonly List<Room> rooms;
 
+        public FakeRoomRepository(bool returnEmpty = false)
+        {
+            rooms = returnEmpty ? new List<Room>() : new List<Room>
+            {
+                new Room { Id = 1 },
+                new Room { Id = 2 },
+                new Room { Id = 3 }
+            };
+        }
+        
         public Task AddAsync(Room entity)
         {
             addWasCalled = true;
@@ -34,15 +45,8 @@ namespace HotelBooking.UnitTests.Fakes
 
         public Task<IEnumerable<Room>> GetAllAsync()
         {
-            IEnumerable<Room> rooms = new List<Room>
-            {
-                new Room { Id=1, Description="A" },
-                new Room { Id=2, Description="B" },
-            };
-            
-            Task<IEnumerable<Room>> roomsTask = Task.Factory.StartNew(() => rooms);
+            return Task.FromResult<IEnumerable<Room>>(rooms);
 
-            return roomsTask;
         }
 
         // This field is exposed so that a unit test can validate that the

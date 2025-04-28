@@ -9,7 +9,8 @@ namespace HotelBooking.UnitTests.Fakes
     {
         private DateTime fullyOccupiedStartDate;
         private DateTime fullyOccupiedEndDate;
-
+        private readonly List<Booking> bookings = new();
+        
         public FakeBookingRepository(DateTime start, DateTime end)
         {
             fullyOccupiedStartDate = start;
@@ -22,6 +23,7 @@ namespace HotelBooking.UnitTests.Fakes
 
         public Task AddAsync(Booking entity)
         {
+            bookings.Add(entity);
             addWasCalled = true;
             return Task.CompletedTask;
         }
@@ -53,16 +55,7 @@ namespace HotelBooking.UnitTests.Fakes
 
         public Task<IEnumerable<Booking>> GetAllAsync()
         {
-            IEnumerable<Booking> bookings = new List<Booking>
-            {
-                new Booking { Id=1, StartDate=DateTime.Today.AddDays(1), EndDate=DateTime.Today.AddDays(1), IsActive=true, CustomerId=1, RoomId=1 },
-                new Booking { Id=1, StartDate=fullyOccupiedStartDate, EndDate=fullyOccupiedEndDate, IsActive=true, CustomerId=1, RoomId=1 },
-                new Booking { Id=2, StartDate=fullyOccupiedStartDate, EndDate=fullyOccupiedEndDate, IsActive=true, CustomerId=2, RoomId=2 },
-            };
-            
-            Task<IEnumerable<Booking>> bookingsTask = Task.Factory.StartNew(() => bookings);
-            
-            return bookingsTask;
+            return Task.FromResult<IEnumerable<Booking>>(bookings);
         }
 
         // This field is exposed so that a unit test can validate that the

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Xunit.Abstractions;
 
 namespace HotelBooking.Core
 {
@@ -9,10 +10,12 @@ namespace HotelBooking.Core
     {
         private IRepository<Booking> bookingRepository;
         private IRepository<Room> roomRepository;
+        private readonly ITestOutputHelper _output;
 
         // Constructor injection
-        public BookingManager(IRepository<Booking> bookingRepository, IRepository<Room> roomRepository)
+        public BookingManager(IRepository<Booking> bookingRepository, IRepository<Room> roomRepository, ITestOutputHelper output)
         {
+            _output = output;
             this.bookingRepository = bookingRepository;
             this.roomRepository = roomRepository;
         }
@@ -48,6 +51,8 @@ namespace HotelBooking.Core
                 if (activeBookingsForCurrentRoom.All(b => startDate < b.StartDate &&
                     endDate < b.StartDate || startDate > b.EndDate && endDate > b.EndDate))
                 {
+                    _output.WriteLine($"Room {room.Id} is considered AVAILABLE with {activeBookingsForCurrentRoom.Count()} bookings.");
+
                     return room.Id;
                 }
             }
